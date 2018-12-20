@@ -1,3 +1,5 @@
+//esp32 IP: 192.168.43.189
+
 #include <ETH.h>
 #include <WiFi.h>
 #include <WiFiClient.h>
