@@ -1,3 +1,13 @@
+/*
+ *腳位說明:
+ *訊號腳位六條: RS、E、D4、D5、D6、D7 接到 esp32
+ *電壓腳位: 5伏特:VDD VSS 、 背光5伏特:A K
+ *VO接可變電阻約10k (0~20K)
+ *RW 接 GND
+ *
+ *ESP32: LED_5 、 LED_D25
+*/
+//------------------------------------------------------------------------------------
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <LiquidCrystal.h>
@@ -8,6 +18,7 @@
 #define         pinMqttStatusLED    12
 #define         LED_D25             25
 #define         LED_D27             27
+#define         SW                  34
 //------------------------------------------------------------------------------------
 
 // initialize the library by associating any needed LCD interface pin
@@ -35,6 +46,8 @@ int             publishCount = 0, reConnectCount = 0;
 //========================================================================================================================
 
 void setup() {
+  pinMode(SW, INPUT);
+  
   pinMode(LED_D25, OUTPUT);
   digitalWrite(LED_D25, LOW);
 
@@ -122,12 +135,12 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   if (Sum == "oo") {                                   //字串的形式
     digitalWrite(LED_D25, HIGH);
-    lcd.setCursor(0, 0);    
+    lcd.setCursor(0, 0);
     lcd.write("led_ON ");
   }
   if (Sum == "ss") {
     digitalWrite(LED_D25, LOW);
-    lcd.setCursor(0, 0);    
+    lcd.setCursor(0, 0);
     lcd.write("led_off");
   }
   //C++ 的switch當中不適用字串string，只適用if else
@@ -178,15 +191,15 @@ void loop() {
     digitalWrite(pinMqttStatusLED, LOW);
   } else {
     mqttClient.loop();
-    //long now = millis();                                          //計數器每秒鐘為一個單位
-    long now = 0 ;
-    if (now - lastMsgMillis > 2000) {
+    long now = millis();                                          //計數器每秒鐘為一個單位
+    //long now = 0 ;                                              //加了這行就無法正常計數，若要回復計數就不要加這行
+    if (now - lastMsgMillis > 4000) {
       lastMsgMillis = now;
       ++publishCount;
-      snprintf (msg, 75, "hello world #%ld", publishCount);          //送出訊息給MQTT
+      snprintf (msg, 75, "hello world #%ld", publishCount);
       Serial.print("Publish message: ");
       Serial.println(msg);
-      mqttClient.publish(mqtt_publish_topic, msg);
+      mqttClient.publish(mqtt_publish_topic, msg);                  //送出訊息給MQTT
     }
   }
   //      // set the cursor to column 0, line 1
