@@ -126,9 +126,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
   //      break;
   //  }
 
-  String Sum = "";
+  String Sum = "";                                    //建立一個加法器，把 (char)payload[i] 放在 String Sum 裡面
   for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
+    //Serial.print((char)payload[i]);                 //這裡是單字元顯示，每顯示一次就跑一次for迴圈，拼成一個字串
 
     //    if ((char)payload[i] == '3') Serial.print("CC"); //OK OK!!!
     //    if ((char)payload[i] == '4') digitalWrite(LED_D25, HIGH);
@@ -137,14 +137,14 @@ void callback(char* topic, byte* payload, unsigned int length) {
     //    if ((char)payload[i] == 'oo') digitalWrite(LED_D25, HIGH); //NO
     //    if ((char)payload[i] == 'ss') digitalWrite(LED_D25, LOW); //NO
 
-    Sum = Sum + (char)payload[i];
+    Sum += (char)payload[i];                          //加法器，累加字串功能
 
     lcd.setCursor(0, 0);
     lcd.setCursor(i, 0);
     lcd.write((char)payload[i]);
   }
 
-  Serial.print(Sum);
+  Serial.print(Sum);                                    //Sum把所有單字加起來之後，才一次顯示出來字串
   if (Sum == "oo") digitalWrite(LED_D25, HIGH); //NO
   if (Sum == "ss") digitalWrite(LED_D25, LOW); //NO
 
