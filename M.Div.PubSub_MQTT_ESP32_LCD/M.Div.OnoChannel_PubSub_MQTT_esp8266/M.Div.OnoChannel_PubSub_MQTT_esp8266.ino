@@ -1,6 +1,9 @@
 /*
  ************* 單通道訂閱跟發送 都在同一個Topic 剛開始 *************
-  腳位說明:
+  ESP8266 功能說明:  單通道: 在同一個Topic控制不同的板子
+  D1 接 LED測試
+
+ *******************************************************************
   訊號腳位六條: RS、E、D4、D5、D6、D7 接到 esp32
   電壓腳位: 5伏特:VDD VSS 、 背光5伏特:A K
   VO接可變電阻約10k (0~20K)
@@ -10,8 +13,9 @@
 
   MQTTlens網址: https://brian7lan3.github.io/MQTTlens/
 */
+#define         LED_D1    5
 //------------------------------------------------------------------------------------
-#include <WiFi.h>
+#include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include <LiquidCrystal.h>
 //------------------------------------------------------------------------------------
@@ -37,7 +41,7 @@ const char*     password = "amonruhyih";
 const char*     mqtt_server = "iot.eclipse.org";
 const char*     mqtt_id = "BL_ESP32Client";
 const char*     mqtt_publish_topic = "brian017";
-const char*     mqtt_subscribe_topic = "brian000";
+const char*     mqtt_subscribe_topic = "brian017";
 const int       mqtt_qos = 1;                           //0：at most once    1：at least once    2：exactly once）
 const bool      mqtt_retain = true;
 //------------------------------------------------------------------------------------
@@ -50,6 +54,9 @@ int             publishCount = 0, reConnectCount = 0;
 //========================================================================================================================
 
 void setup() {
+  pinMode(LED_D1, OUTPUT);
+  digitalWrite(LED_D1, LOW);
+
   pinMode(Alarm_pin, INPUT);
 
   pinMode(LED_D25, OUTPUT);
@@ -137,6 +144,18 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   Serial.print(Sum);                                   //Sum把所有單字加起來之後，才一次顯示出來字串
 
+
+  //ESP8266專屬部分
+  if (Sum == "11on") {                                   //字串的形式
+    digitalWrite(LED_D1, HIGH);
+    mqttClient.publish(mqtt_publish_topic, "First LED...ON");
+  }
+  if (Sum == "11off") {
+    digitalWrite(LED_D1, LOW);
+    mqttClient.publish(mqtt_publish_topic, "First LED...off");
+  }
+
+
   if (Sum == "oo") {                                   //字串的形式
     digitalWrite(LED_D25, HIGH);
     lcd.setCursor(0, 0);
@@ -156,9 +175,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 
   // Switch on the LED if an 1 was received as first character
-  if (payload[0] == '0') {                            //字元的形式
+  if (payload[0] == '00') {                            //字元的形式
     digitalWrite(pinRelayLED, LOW);
-  } else if (payload[0] == '1') {
+  } else if (payload[0] == '11') {
     digitalWrite(pinRelayLED, HIGH);  // Turn the LED off by making the voltage HIGH
   }
 }
