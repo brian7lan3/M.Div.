@@ -33,7 +33,7 @@ const char*     password = "amonruhyih";
 const char*     mqtt_server = "iot.eclipse.org";
 const char*     mqtt_id = "BL_ESP32Client";
 const char*     mqtt_publish_topic = "brian017";
-const char*     mqtt_subscribe_topic = "brian017";
+const char*     mqtt_subscribe_topic = "brian000";
 const int       mqtt_qos = 1;                           //0：at most once    1：at least once    2：exactly once）
 const bool      mqtt_retain = true;
 //------------------------------------------------------------------------------------
@@ -137,11 +137,13 @@ void callback(char* topic, byte* payload, unsigned int length) {
     digitalWrite(LED_D25, HIGH);
     lcd.setCursor(0, 0);
     lcd.write("led_ON ");
+    mqttClient.publish(mqtt_publish_topic, "LED_D25...ON"); 
   }
   if (Sum == "ss") {
     digitalWrite(LED_D25, LOW);
     lcd.setCursor(0, 0);
     lcd.write("led_off");
+    mqttClient.publish(mqtt_publish_topic, "LED_D25...off"); 
   }
   //C++ 的switch當中不適用字串string，只適用if else
 
@@ -193,7 +195,7 @@ void loop() {
     mqttClient.loop();
     long now = millis();                                          //計數器每秒鐘為一個單位
     //long now = 0 ;                                              //加了這行就無法正常計數，若要回復計數就不要加這行
-    if (now - lastMsgMillis > 4000) {
+    if (now - lastMsgMillis > 7000) {
       lastMsgMillis = now;
       ++publishCount;
       snprintf (msg, 75, "hello world #%ld", publishCount);
