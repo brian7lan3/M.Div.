@@ -97,57 +97,25 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print(topic);
   Serial.print("] ");
 
-  //  int VAR = (int)payload;
-  //
-  //  if (VAR == 1) Serial.println("LED_D25___on");
-  //  if (VAR == 2) Serial.println("LED_D25_off");
-  //
-  //  if (VAR == '5') Serial.println("LED_D27___on");
-  //  if (VAR == '6') Serial.println("LED_D27_off");
-  //
-  //  switch (VAR) {
-  //    case '1':
-  //      digitalWrite(LED_D25, HIGH);
-  //      Serial.println("LED_D25___on");
-  //      break;
-  //    case '2':
-  //      digitalWrite(LED_D25, LOW);
-  //      Serial.println("LED_D25_off");
-  //      break;
-  //    case '3':
-  //      digitalWrite(LED_D27, HIGH);
-  //      Serial.println("LED_D27___on");
-  //      break;
-  //    case '4':
-  //      digitalWrite(LED_D27, LOW);
-  //      Serial.println("LED_D27_off");
-  //      break;
-  //    default:
-  //      break;
-  //  }
+
 
   String Sum = "";                                    //建立一個加法器，把 (char)payload[i] 放在 String Sum 裡面
+
+  //因為LCD只能一格一格顯示
   for (int i = 0; i < length; i++) {
     //Serial.print((char)payload[i]);                 //這裡是單字元顯示，每顯示一次就跑一次for迴圈，拼成一個字串
 
-    //    if ((char)payload[i] == '3') Serial.print("CC"); //OK OK!!!
-    //    if ((char)payload[i] == '4') digitalWrite(LED_D25, HIGH);
-    //    if ((char)payload[i] == '5') digitalWrite(LED_D25, LOW);
-    //
-    //    if ((char)payload[i] == 'oo') digitalWrite(LED_D25, HIGH); //NO
-    //    if ((char)payload[i] == 'ss') digitalWrite(LED_D25, LOW); //NO
-
     Sum += (char)payload[i];                          //加法器，累加字串功能
 
-    lcd.setCursor(0, 0);
-    lcd.setCursor(i, 0);
-    lcd.write((char)payload[i]);
+    lcd.setCursor(i, 1);                              //設定顯示LCD的起始位置，第i行、第1列(是下面那行)
+    lcd.write((char)payload[i]);                      //第i行是左至右，由第0行開始
   }
 
-  Serial.print(Sum);                                    //Sum把所有單字加起來之後，才一次顯示出來字串
-  if (Sum == "oo") digitalWrite(LED_D25, HIGH); //NO
-  if (Sum == "ss") digitalWrite(LED_D25, LOW); //NO
-
+  Serial.print(Sum);                                   //Sum把所有單字加起來之後，才一次顯示出來字串
+  
+  if (Sum == "oo") digitalWrite(LED_D25, HIGH);
+  if (Sum == "ss") digitalWrite(LED_D25, LOW);
+  //C++ 的switch當中不適用字串string，只適用if else
 
   Serial.print("     reConnectCount = ");
   Serial.println(reConnectCount);
