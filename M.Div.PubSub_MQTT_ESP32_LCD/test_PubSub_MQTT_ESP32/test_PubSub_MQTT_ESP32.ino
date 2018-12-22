@@ -12,7 +12,7 @@
 
 // initialize the library by associating any needed LCD interface pin
 // with the arduino pin number it is connected to
-const int       rs = 23, en = 22, d4 = 21, d5 = 19, d6 = 4, d7 = 2;
+const int       rs = 23, en = 22, d4 = 21, d5 = 19, d6 = 4, d7 = 2;                 // LCD 腳位接到 ESP32
 LiquidCrystal     lcd(rs, en, d4, d5, d6, d7);
 //------------------------------------------------------------------------------------
 // Update these with publishCounts suitable for your network.
@@ -98,7 +98,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("] ");
 
 
-
   String Sum = "";                                    //建立一個加法器，把 (char)payload[i] 放在 String Sum 裡面
 
   //因為LCD只能一格一格顯示
@@ -112,8 +111,8 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
 
   Serial.print(Sum);                                   //Sum把所有單字加起來之後，才一次顯示出來字串
-  
-  if (Sum == "oo") digitalWrite(LED_D25, HIGH);
+
+  if (Sum == "oo") digitalWrite(LED_D25, HIGH);       //字串的形式
   if (Sum == "ss") digitalWrite(LED_D25, LOW);
   //C++ 的switch當中不適用字串string，只適用if else
 
@@ -121,7 +120,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println(reConnectCount);
 
   // Switch on the LED if an 1 was received as first character
-  if (payload[0] == '0') {
+  if (payload[0] == '0') {                            //字元的形式
     digitalWrite(pinRelayLED, LOW);
   } else if (payload[0] == '1') {
     digitalWrite(pinRelayLED, HIGH);  // Turn the LED off by making the voltage HIGH
@@ -162,12 +161,12 @@ void loop() {
     digitalWrite(pinMqttStatusLED, LOW);
   } else {
     mqttClient.loop();
-    //long now = millis();
+    //long now = millis();                                          //計數器每秒鐘為一個單位
     long now = 0 ;
     if (now - lastMsgMillis > 2000) {
       lastMsgMillis = now;
       ++publishCount;
-      snprintf (msg, 75, "hello world #%ld", publishCount);
+      snprintf (msg, 75, "hello world #%ld", publishCount);          //送出訊息給MQTT
       Serial.print("Publish message: ");
       Serial.println(msg);
       mqttClient.publish(mqtt_publish_topic, msg);
