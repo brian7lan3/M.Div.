@@ -126,22 +126,29 @@ void callback(char* topic, byte* payload, unsigned int length) {
   //      break;
   //  }
 
-
+  String Sum = "";
   for (int i = 0; i < length; i++) {
     Serial.print((char)payload[i]);
 
-    if ((char)payload[i] == '3') Serial.print("CC"); //OK OK!!!
-    if ((char)payload[i] == '4') digitalWrite(LED_D25, HIGH);
-    if ((char)payload[i] == '5') digitalWrite(LED_D25, LOW);
+    //    if ((char)payload[i] == '3') Serial.print("CC"); //OK OK!!!
+    //    if ((char)payload[i] == '4') digitalWrite(LED_D25, HIGH);
+    //    if ((char)payload[i] == '5') digitalWrite(LED_D25, LOW);
+    //
+    //    if ((char)payload[i] == 'oo') digitalWrite(LED_D25, HIGH); //NO
+    //    if ((char)payload[i] == 'ss') digitalWrite(LED_D25, LOW); //NO
 
-
-    if ((char)payload[i] == 'oo') digitalWrite(LED_D25, HIGH); //NO
-    if ((char)payload[i] == 'ss') digitalWrite(LED_D25, LOW); //NO
+    Sum = Sum + (char)payload[i];
 
     lcd.setCursor(0, 0);
     lcd.setCursor(i, 0);
     lcd.write((char)payload[i]);
   }
+
+  Serial.print(Sum);
+  if (Sum == "oo") digitalWrite(LED_D25, HIGH); //NO
+  if (Sum == "ss") digitalWrite(LED_D25, LOW); //NO
+
+
   Serial.print("     reConnectCount = ");
   Serial.println(reConnectCount);
 
