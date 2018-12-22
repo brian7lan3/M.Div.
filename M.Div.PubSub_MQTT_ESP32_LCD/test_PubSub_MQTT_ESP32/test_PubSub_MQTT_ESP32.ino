@@ -1,13 +1,13 @@
 /*
- *腳位說明:
- *訊號腳位六條: RS、E、D4、D5、D6、D7 接到 esp32
- *電壓腳位: 5伏特:VDD VSS 、 背光5伏特:A K
- *VO接可變電阻約10k (0~20K)
- *RW 接 GND
- *
- *ESP32: LED_5 、 LED_D25
- *
- *MQTTlens網址: https://brian7lan3.github.io/MQTTlens/
+  腳位說明:
+  訊號腳位六條: RS、E、D4、D5、D6、D7 接到 esp32
+  電壓腳位: 5伏特:VDD VSS 、 背光5伏特:A K
+  VO接可變電阻約10k (0~20K)
+  RW 接 GND
+
+  ESP32: LED_5 、 LED_D25　、　Alarm:D34
+
+  MQTTlens網址: https://brian7lan3.github.io/MQTTlens/
 */
 //------------------------------------------------------------------------------------
 #include <WiFi.h>
@@ -20,7 +20,8 @@
 #define         pinMqttStatusLED    12
 #define         LED_D25             25
 #define         LED_D27             27
-#define         SW                  34
+const byte      Alarm_pin = 34;                 //警報輸入腳位
+boolean state = HIGH;                           //警報狀態的初值
 //------------------------------------------------------------------------------------
 
 // initialize the library by associating any needed LCD interface pin
@@ -48,8 +49,8 @@ int             publishCount = 0, reConnectCount = 0;
 //========================================================================================================================
 
 void setup() {
-  pinMode(SW, INPUT);
-  
+  pinMode(Alarm_pin, INPUT);
+
   pinMode(LED_D25, OUTPUT);
   digitalWrite(LED_D25, LOW);
 
@@ -139,13 +140,13 @@ void callback(char* topic, byte* payload, unsigned int length) {
     digitalWrite(LED_D25, HIGH);
     lcd.setCursor(0, 0);
     lcd.write("led_ON ");
-    mqttClient.publish(mqtt_publish_topic, "LED_D25...ON"); 
+    mqttClient.publish(mqtt_publish_topic, "LED_D25...ON");
   }
   if (Sum == "ss") {
     digitalWrite(LED_D25, LOW);
     lcd.setCursor(0, 0);
     lcd.write("led_off");
-    mqttClient.publish(mqtt_publish_topic, "LED_D25...off"); 
+    mqttClient.publish(mqtt_publish_topic, "LED_D25...off");
   }
   //C++ 的switch當中不適用字串string，只適用if else
 
@@ -188,6 +189,7 @@ void mqttConnect() {
 //========================================================================================================================
 
 void loop() {
+  SW();
 
   if (!mqttClient.connected()) {
     mqttConnect();
@@ -209,4 +211,20 @@ void loop() {
   //      // set the cursor to column 0, line 1
   //    lcd.setCursor(0, 1);
   //    lcd.print(mqtt_qos);
+}
+
+void SW() {
+
+  if (state != digitalRead(Alarm_pin)) {
+    state = digitalRead(Alarm_pin);
+
+    if (state == LOW) {
+      Serial.println("Alarm ON");
+      mqttClient.publish(mqtt_publish_topic, "Alarm ON");
+    } else {
+      Serial.println("Alarm off");
+      mqttClient.publish(mqtt_publish_topic, "Alarm off");
+    }
+    //    delay(40);          //警報開關目前還有防彈跳問題沒有解決
+  }
 }
