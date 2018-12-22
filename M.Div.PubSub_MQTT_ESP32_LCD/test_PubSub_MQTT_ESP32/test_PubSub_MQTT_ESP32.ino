@@ -45,6 +45,11 @@ void setup() {
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
   lcd.clear();
+
+  //  lcd.setCursor(0, 0);                      // 設定游標位置
+  //  lcd.cursor();                             // 顯示游標
+  //  lcd.blink();                              // 讓游標閃爍
+
   // Print a message to the LCD.
   lcd.print("hello, world!");
 
@@ -102,7 +107,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   String Sum = "";                                    //建立一個加法器，把 (char)payload[i] 放在 String Sum 裡面
 
   lcd.clear();
-  
+
   //因為LCD只能一格一格顯示
   for (int i = 0; i < length; i++) {
     //Serial.print((char)payload[i]);                 //這裡是單字元顯示，每顯示一次就跑一次for迴圈，拼成一個字串
@@ -115,8 +120,16 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   Serial.print(Sum);                                   //Sum把所有單字加起來之後，才一次顯示出來字串
 
-  if (Sum == "oo") digitalWrite(LED_D25, HIGH);       //字串的形式
-  if (Sum == "ss") digitalWrite(LED_D25, LOW);
+  if (Sum == "oo") {                                   //字串的形式
+    digitalWrite(LED_D25, HIGH);
+    lcd.setCursor(0, 0);    
+    lcd.write("led_ON ");
+  }
+  if (Sum == "ss") {
+    digitalWrite(LED_D25, LOW);
+    lcd.setCursor(0, 0);    
+    lcd.write("led_off");
+  }
   //C++ 的switch當中不適用字串string，只適用if else
 
   Serial.print("     reConnectCount = ");
