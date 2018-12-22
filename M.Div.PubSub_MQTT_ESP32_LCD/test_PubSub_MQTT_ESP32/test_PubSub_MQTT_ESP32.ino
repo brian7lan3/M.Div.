@@ -44,6 +44,7 @@ void setup() {
   // Initialize the BUILTIN_LED pin as an output
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
+  lcd.clear();
   // Print a message to the LCD.
   lcd.print("hello, world!");
 
@@ -100,6 +101,8 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   String Sum = "";                                    //建立一個加法器，把 (char)payload[i] 放在 String Sum 裡面
 
+  lcd.clear();
+  
   //因為LCD只能一格一格顯示
   for (int i = 0; i < length; i++) {
     //Serial.print((char)payload[i]);                 //這裡是單字元顯示，每顯示一次就跑一次for迴圈，拼成一個字串
@@ -118,6 +121,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   Serial.print("     reConnectCount = ");
   Serial.println(reConnectCount);
+
 
   // Switch on the LED if an 1 was received as first character
   if (payload[0] == '0') {                            //字元的形式
