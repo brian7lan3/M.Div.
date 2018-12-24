@@ -121,6 +121,17 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print(Sum);                                   //Sum把所有單字加起來之後，才一次顯示出來字串
 
 
+  //測試保留
+  if (Sum == "zzzzz") {                                   //字串的形式
+    mqttClient.publish("brian017/zzzzz", "zzzzz OK", 1);  //OK
+  }
+  if (Sum == "yyyyy") {                                   //字串的形式
+    mqttClient.publish("brian017/yyyyy", "yyyyy OK", 0);  //NO
+  }
+  if (Sum == "xxxxx") {                                   //字串的形式
+    mqttClient.publish("brian017/xxxxx", "xxxxx OK");     //NO
+  }
+
   //ESP8266專屬部分
   if (Sum == "Alarm ON") {                                   //字串的形式
     digitalWrite(LED_D1, HIGH);
@@ -201,7 +212,7 @@ void loop() {
     mqttClient.loop();
     long now = millis();                                          //計數器每秒鐘為一個單位
     //long now = 0 ;                                              //加了這行就無法正常計數，若要回復計數就不要加這行
-    if (now - lastMsgMillis > 7000) {                             //發送訊息的間格
+    if (now - lastMsgMillis > 70000) {                             //發送訊息的間格
       lastMsgMillis = now;
       ++publishCount;
       snprintf (msg, 75, "hello world #%ld", publishCount);
