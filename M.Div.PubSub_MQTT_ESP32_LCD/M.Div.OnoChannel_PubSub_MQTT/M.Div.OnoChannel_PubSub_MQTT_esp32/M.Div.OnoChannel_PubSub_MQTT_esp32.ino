@@ -11,9 +11,9 @@
   4. 要把動作分到最細最細
  *******************************************************************
 */
-#define         LED_D1    5
+#define         LED_D1    23
 //------------------------------------------------------------------------------------
-#include <ESP8266WiFi.h>
+#include <WiFi.h>
 #include <PubSubClient.h>
 //------------------------------------------------------------------------------------
 // Defining I/O Pins
@@ -22,7 +22,7 @@
 #define         pinMqttStatusLED    12
 #define         LED_D25             25
 #define         LED_D27             27
-const byte      Alarm_pin = D6;                 //警報輸入腳位
+const byte      Alarm_pin = 18;                 //警報輸入腳位
 boolean state = HIGH;                           //警報狀態的初值
 //------------------------------------------------------------------------------------
 // Update these with publishCounts suitable for your network.
@@ -30,7 +30,7 @@ const char*     ssid = "RY";
 const char*     password = "amonruhyih";
 //------------------------------------------------------------------------------------
 const char*     mqtt_server = "iot.eclipse.org";
-const char*     mqtt_id = "BL002_ESP32Client";
+const char*     mqtt_id = "BL032_ESP32Client";
 const char*     mqtt_publish_topic = "brian017";
 const char*     mqtt_subscribe_topic = "brian017";
 const int       mqtt_qos = 1;                           //0：at most once    1：at least once    2：exactly once）
@@ -225,6 +225,6 @@ void SW() {
       Serial.println("Alarm off");
       mqttClient.publish(mqtt_publish_topic, "Alarm off");
     }
-    //    delay(40);          //警報開關目前還有防彈跳問題沒有解決
+    delay(200);          //警報開關目前還有防彈跳問題沒有解決
   }
 }
