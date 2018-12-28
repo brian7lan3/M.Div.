@@ -28,9 +28,11 @@ boolean state = HIGH;                           //警報狀態的初值
 // Update these with publishCounts suitable for your network.
 const char*     ssid = "RY";
 const char*     password = "amonruhyih";
+const char*     mqtt_username = "qccbfrys";           //MQTT的帳號
+const char*     mqtt_password = "3aWqBmnOYkc8";               //MQTT的密碼
 //------------------------------------------------------------------------------------
-const char*     mqtt_server = "iot.eclipse.org";
-const char*     mqtt_id = "BL002_ESP32Client";
+const char*     mqtt_server = "m15.cloudmqtt.com";
+const char*     mqtt_id = "bl_test_password_esp8266";
 const char*     mqtt_publish_topic = "brian017";
 const char*     mqtt_subscribe_topic = "brian017";
 const int       mqtt_qos = 1;                           //0：at most once    1：at least once    2：exactly once）
@@ -69,7 +71,7 @@ void setup() {
   Serial.begin(115200);
   setup_wifi();
 
-  mqttClient.setServer(mqtt_server, 1883);
+  mqttClient.setServer(mqtt_server, 18834);
   mqttClient.setCallback(callback);
 
   while (!mqttClient.connected()) { // Loop until we're connected
@@ -180,11 +182,17 @@ void callback(char* topic, byte* payload, unsigned int length) {
 void mqttConnect() {
   Serial.print("Attempting MQTT connection...");
   // Attempt to connect
-  boolean connectOK = mqttClient.connect(mqtt_id, mqtt_publish_topic, mqtt_qos, mqtt_retain, "esp32 connected");
+  //  boolean connectOK = mqttClient.connect(mqtt_id, mqtt_publish_topic, mqtt_qos, mqtt_retain, "esp32 connected");
+  //  boolean connectOK = mqttClient.connect (mqtt_id, mqtt_username, mqtt_password, mqtt_publish_topic, mqtt_qos, mqtt_retain, "esp32 connected_TEST_PASSWORD");
+
+
+  boolean connectOK = mqttClient.connect (mqtt_id, mqtt_username, mqtt_password);
+//  boolean connectOK = mqttClient.connect (mqtt_id);
+
   if (connectOK) {  //deviceID
     Serial.println("mqtt broker connected");
     // Once connected, publish an announcement...
-    mqttClient.publish(mqtt_publish_topic, "esp32 connected");
+    mqttClient.publish(mqtt_publish_topic, "CloudMQTT_test.123123123...");
     // ... and resubscribe
     mqttClient.subscribe(mqtt_subscribe_topic, mqtt_qos);
     publishCount = 0; //reset count for test
@@ -212,7 +220,7 @@ void loop() {
     mqttClient.loop();
     long now = millis();                                          //計數器每秒鐘為一個單位
     //long now = 0 ;                                              //加了這行就無法正常計數，若要回復計數就不要加這行
-    if (now - lastMsgMillis > 70000) {                             //發送訊息的間格
+    if (now - lastMsgMillis > 3000) {                             //發送訊息的間格
       lastMsgMillis = now;
       ++publishCount;
       snprintf (msg, 75, "hello world #%ld", publishCount);
