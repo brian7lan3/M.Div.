@@ -28,13 +28,13 @@ boolean state = HIGH;                           //警報狀態的初值
 // Update these with publishCounts suitable for your network.
 const char*     ssid = "RY";
 const char*     password = "amonruhyih";
-const char*     mqtt_username = "qccbfrys";           //MQTT的帳號
-const char*     mqtt_password = "3aWqBmnOYkc8";               //MQTT的密碼
+const char*     mqtt_username = "132";           //MQTT的帳號
+const char*     mqtt_password = "456";               //MQTT的密碼
 //------------------------------------------------------------------------------------
-const char*     mqtt_server = "m15.cloudmqtt.com";
-const char*     mqtt_id = "bl_test_password_esp8266";
-const char*     mqtt_publish_topic = "brian017";
-const char*     mqtt_subscribe_topic = "brian017";
+const char*     mqtt_server = "mqttroute.com";
+const char*     mqtt_id = "brian0104";
+const char*     mqtt_publish_topic = "BL510";
+const char*     mqtt_subscribe_topic = "BL510";
 const int       mqtt_qos = 1;                           //0：at most once    1：at least once    2：exactly once）
 const bool      mqtt_retain = true;
 //------------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ void setup() {
   Serial.begin(115200);
   setup_wifi();
 
-  mqttClient.setServer(mqtt_server, 18834);
+  mqttClient.setServer(mqtt_server, 1883);
   mqttClient.setCallback(callback);
 
   while (!mqttClient.connected()) { // Loop until we're connected
