@@ -124,11 +124,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
   //ESP8266專屬部分
   if (Sum == "Alarm ON") {                                   //字串的形式
     digitalWrite(LED_D1, HIGH);
-    mqttClient.publish(mqtt_publish_topic, "First LED...ON");
+//    mqttClient.publish(mqtt_publish_topic, "First LED...ON");
   }
   if (Sum == "Alarm off") {
     digitalWrite(LED_D1, LOW);
-    mqttClient.publish(mqtt_publish_topic, "First LED...off");
+//    mqttClient.publish(mqtt_publish_topic, "First LED...off");
   }
 
   //ESP8266專屬部分
